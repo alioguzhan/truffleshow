@@ -17,6 +17,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="report-service.js"></script>
   <script src="core.js"></script>
+  <script defer src="https://umami.rosical.dev/script.js"
+    data-website-id="7def46aa-968c-4148-bed0-0cc3050c24af"></script>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
@@ -57,7 +59,8 @@
       <div class="mb-4">
         <p class="text-xs text-red-600 dark:text-orange-300 mb-2 text-center">
           <i class="fas fa-exclamation-circle mr-1"></i>
-          Pipe the output with <code class="bg-gray-200 dark:text-white dark:bg-gray-600">jq -s .</code> to fix broken JSON.
+          Pipe the output with <code class="bg-gray-200 dark:text-white dark:bg-gray-600">jq -s .</code> to fix broken
+          JSON.
           See <a href="https://github.com/trufflesecurity/trufflehog/issues/2164" target="_blank"
             class="text-blue-600 dark:text-blue-400 hover:underline">#2164</a> for more.
         </p>
@@ -116,7 +119,7 @@
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">
             <i class="fas fa-list-check text-teal-600 dark:text-teal-400 mr-1"></i>Findings
-              <span class="text-sm dark:text-gray-400 font-normal" x-text="fileName"></span>
+            <span class="text-sm dark:text-gray-400 font-normal" x-text="fileName"></span>
           </h2>
           <div class="flex items-center space-x-2">
             <button @click="generateReport" class="px-2 py-2 bg-blue-600 dark:bg-blue-700 text-white  rounded hover:bg-blue-700
