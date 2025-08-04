@@ -18,15 +18,15 @@ jobs:
         name: "Release"
         uses: "googleapis/release-please-action@v4"
 
-      - name: "Checkout Codebase"
-        if: "${{ steps.release.outputs.release_created }}"
-        uses: "actions/checkout@v4"
-
-      - name: Deploy
-        if: "${{ steps.release.outputs.release_created }}"
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy src/ --project-name=truffleshow
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      # - name: "Checkout Codebase"
+      #   if: "${{ steps.release.outputs.release_created }}"
+      #   uses: "actions/checkout@v4"
+      #
+      # - name: Deploy
+      #   if: "${{ steps.release.outputs.release_created }}"
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     command: pages deploy src/ --project-name=truffleshow
+      #     gitHubToken: ${{ secrets.GITHUB_TOKEN }}
