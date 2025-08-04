@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/alioguzhan/truffleshow/compare/0.4.1...0.4.2) (2025-08-04)
+
+
+### Miscellaneous Chores
+
+* **release:** 0.4.2 ([2850b70](https://github.com/alioguzhan/truffleshow/commit/2850b7012ae17bb70b852d91acca5912060daec2))
+
 ## [0.4.1](https://github.com/alioguzhan/truffleshow/compare/0.4.0...0.4.1) (2025-03-22)
 
 
