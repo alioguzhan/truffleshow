@@ -13,47 +13,72 @@ document.addEventListener("alpine:init", () => {
     source: undefined,
     sampleDataURL: "https://static.truffleshow.dev/github-sample.json",
     fileName: null,
+    loadedFiles: [], // Track multiple loaded files
 
     init() { },
 
     uploadFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
 
       this.isLoading = true;
       this.error = null;
-      this.fileName = file.name;
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.loadFile(e.target.result);
-      };
-      reader.onerror = () => {
-        this.error = "Error reading file. Please try again.";
-        this.isLoading = false;
-      };
-      reader.readAsText(file);
+      // Process each selected file
+      let filesProcessed = 0;
+      const totalFiles = files.length;
+
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.loadFile(e.target.result, file.name);
+          filesProcessed++;
+          if (filesProcessed === totalFiles) {
+            this.isLoading = false;
+          }
+        };
+        reader.onerror = () => {
+          this.error = `Error reading file ${file.name}. Please try again.`;
+          this.isLoading = false;
+        };
+        reader.readAsText(file);
+      });
     },
 
-    loadFile(data) {
+    loadFile(data, fileName) {
       try {
-        this.truffleHogData = JSON.parse(data);
+        const newData = JSON.parse(data);
+
+        // Add the file to loadedFiles tracking
+        this.loadedFiles.push({
+          name: fileName,
+          count: newData.length,
+          data: newData,
+        });
+
+        // Append new data to existing data
+        this.truffleHogData = [...this.truffleHogData, ...newData];
+
         // Initialize all items as collapsed
         this.expandedItems = Object.fromEntries(
           this.truffleHogData.map((_, index) => [index, false]),
         );
-        const sourceNames = this.truffleHogData.map(
-          (finding) => Object.keys(finding.SourceMetadata.Data)[0],
-        );
-        this.source = sourceNames.length > 0 ? sourceNames[0] : undefined;
-        console.log("Source is: ", this.source);
+
+        // Set source from first finding if not already set
+        if (!this.source && this.truffleHogData.length > 0) {
+          const sourceNames = this.truffleHogData.map(
+            (finding) => Object.keys(finding.SourceMetadata.Data)[0],
+          );
+          this.source = sourceNames.length > 0 ? sourceNames[0] : undefined;
+          console.log("Source is: ", this.source);
+        }
+
         this.applySorting();
         this.isFileUploaded = true;
-        this.isLoading = false;
       } catch (error) {
         console.error(error);
         this.error =
-          "Invalid JSON file. Please upload a valid TruffleHog JSON output.";
+          `Invalid JSON file: ${fileName}. Please upload a valid TruffleHog JSON output.`;
         this.isLoading = false;
       }
     },
@@ -63,8 +88,7 @@ document.addEventListener("alpine:init", () => {
       fetch(this.sampleDataURL)
         .then((response) => response.text())
         .then((data) => {
-          this.fileName = "github-sample.json";
-          this.loadFile(data);
+          this.loadFile(data, "github-sample.json");
         })
         .catch((error) => {
           console.error(error);
@@ -82,7 +106,32 @@ document.addEventListener("alpine:init", () => {
       this.isFileUploaded = false;
       this.error = null;
       this.expandedItems = {};
+      this.loadedFiles = [];
+      this.source = undefined;
       document.getElementById("fileInput").value = "";
+    },
+
+    removeFile(fileIndex) {
+      // Remove the file from loadedFiles
+      const removedFile = this.loadedFiles.splice(fileIndex, 1)[0];
+
+      // Rebuild truffleHogData from remaining files
+      this.truffleHogData = [];
+      this.loadedFiles.forEach((file) => {
+        this.truffleHogData = [...this.truffleHogData, ...file.data];
+      });
+
+      // If no files remain, reset the app
+      if (this.loadedFiles.length === 0) {
+        this.resetApp();
+        return;
+      }
+
+      // Re-initialize expanded items and apply sorting
+      this.expandedItems = Object.fromEntries(
+        this.truffleHogData.map((_, index) => [index, false]),
+      );
+      this.applySorting();
     },
 
     toggleItem(index) {
@@ -265,6 +314,23 @@ document.addEventListener("alpine:init", () => {
       // Use the report service to generate the report
       ReportService.generatePDFReport(reportData, this.source);
       this.isGeneratingReport = false;
+    },
+    generateCSVReport() {
+      // Prepare the data needed for the report
+      const reportData = {
+        stats: {
+          totalFindings: this.getTotalFindings(),
+          verifiedCount: this.getVerifiedCount(),
+          failedCount: this.getFailedCount(),
+          notVerifiedCount: this.getNotVerifiedCount(),
+          uniqueDetectors: this.getUniqueDetectors(),
+          uniqueRepositories: this.getUniqueRepositories(),
+        },
+        findings: this.displayedData,
+      };
+
+      // Use the report service to generate the CSV report
+      ReportService.generateCSVReport(reportData, this.source);
     },
   }));
 });

@@ -73,10 +73,10 @@
                 Click to browse
               </p>
               <p class="text-xs text-gray-500 dark:text-gray-500">
-                .json files only
+                .json files (multiple files supported)
               </p>
             </div>
-            <input id="fileInput" type="file" accept=".json" @change="uploadFile($event)" class="hidden" />
+            <input id="fileInput" type="file" accept=".json" multiple @change="uploadFile($event)" class="hidden" />
           </label>
 
           <div class="flex flex-col items-center justify-center pt-1">
@@ -116,12 +116,36 @@
     </div>
     <div <!-- Results Section -->
       <div x-cloak x-show="isFileUploaded" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 dark-transition">
+        <!-- Loaded Files Section -->
+        <div class="mb-4 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 dark-transition">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+            <i class="fas fa-files text-teal-500 dark:text-teal-400 mr-2"></i>
+            Loaded Files (<span x-text="loadedFiles.length"></span>)
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            <template x-for="(file, index) in loadedFiles" :key="index">
+              <div class="bg-white dark:bg-gray-800 rounded px-3 py-1 text-sm flex items-center space-x-2 dark-transition">
+                <i class="fas fa-file-code text-teal-500 dark:text-teal-400"></i>
+                <span class="text-gray-700 dark:text-gray-300" x-text="file.name"></span>
+                <span class="text-xs text-gray-500 dark:text-gray-400" x-text="`(${file.count} findings)`"></span>
+                <button @click="removeFile(index)" class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 ml-1">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </template>
+          </div>
+        </div>
+
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">
             <i class="fas fa-list-check text-teal-600 dark:text-teal-400 mr-1"></i>Findings
-            <span class="text-sm dark:text-gray-400 font-normal" x-text="fileName"></span>
           </h2>
           <div class="flex items-center space-x-2">
+            <button @click="generateCSVReport" class="px-2 py-2 bg-green-600 dark:bg-green-700 text-white rounded hover:bg-green-700
+                dark:hover:bg-green-600 transition flex items-center text-sm">
+              <i class="fas fa-file-csv mr-1"></i>
+              <span>Download CSV</span>
+            </button>
             <button @click="generateReport" class="px-2 py-2 bg-blue-600 dark:bg-blue-700 text-white  rounded hover:bg-blue-700
                 dark:hover:bg-blue-600 transition flex items-center text-sm">
               <template x-if="!isGeneratingReport">

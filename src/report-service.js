@@ -275,6 +275,109 @@ const ReportService = {
       ? text.substring(0, maxLength) + "..."
       : text;
   },
+
+  /**
+   * Generate and download a CSV report for TruffleHog findings
+   * @param {Object} data - The data needed to generate the report
+   * @param {string} source - The source type (e.g., 'Git', 'Github')
+   */
+  generateCSVReport(data, source) {
+    try {
+      // Define CSV headers
+      const headers = [
+        "Detector Name",
+        "Verification Status",
+        "Repository",
+        "File",
+        "Line",
+        "Commit",
+        "Timestamp",
+        "Email",
+        "Visibility",
+        "Credential (Raw)",
+        "Verification Error",
+        "Decoder Name",
+        "Description",
+        "Link",
+      ];
+
+      // Start CSV with headers
+      let csvContent = headers.map((h) => this.escapeCSVField(h)).join(",") + "\n";
+
+      // Process each finding
+      for (const finding of data.findings) {
+        const sourceData = finding.SourceMetadata?.Data?.[source];
+
+        // Determine verification status
+        let verificationStatus = "Not Verified";
+        if (finding.Verified) {
+          verificationStatus = "Verified";
+        } else if (finding.VerificationError) {
+          verificationStatus = "Failed";
+        }
+
+        const row = [
+          finding.DetectorName || "",
+          verificationStatus,
+          sourceData?.repository?.replace("https://github.com/", "").replace(".git", "") || "",
+          sourceData?.file || "",
+          sourceData?.line || "",
+          sourceData?.commit || "",
+          sourceData?.timestamp || "",
+          sourceData?.email || "",
+          sourceData?.visibility === 1 ? "Public" : sourceData?.visibility === 0 ? "Private" : "",
+          finding.Raw || "",
+          finding.VerificationError || "",
+          finding.DecoderName || "",
+          finding.DetectorDescription || "",
+          sourceData?.link || "",
+        ];
+
+        csvContent += row.map((field) => this.escapeCSVField(field)).join(",") + "\n";
+      }
+
+      // Create a blob and download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute("href", url);
+      link.setAttribute("download", "truffleshow-report.csv");
+      link.style.visibility = "hidden";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+
+      return true;
+    } catch (error) {
+      console.error("Error generating CSV:", error);
+      alert("An error occurred while generating the CSV. Please try again.");
+      return false;
+    }
+  },
+
+  /**
+   * Escape CSV field to handle commas, quotes, and newlines
+   * @param {string|number} field - The field to escape
+   * @returns {string} - The escaped field
+   */
+  escapeCSVField(field) {
+    if (field === null || field === undefined) {
+      return '""';
+    }
+
+    const stringField = String(field);
+
+    // If field contains comma, quote, or newline, wrap in quotes and escape quotes
+    if (stringField.includes(",") || stringField.includes('"') || stringField.includes("\n")) {
+      return '"' + stringField.replace(/"/g, '""') + '"';
+    }
+
+    return stringField;
+  },
 };
 
 // Export the service
