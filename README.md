@@ -49,8 +49,8 @@ If not, you can use any static file server to serve the `src` directory. This is
 
 ## Contributors
 
-<!-- readme: contributors -start -->
-<!-- readme: contributors -end -->
+<!-- readme: collaborators,contributors -start -->
+<!-- readme: collaborators,contributors -end -->
 
 ## License
 
