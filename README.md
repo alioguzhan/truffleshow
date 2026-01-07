@@ -43,9 +43,14 @@ If you are using `nix flakes`, you can run:
 nix develop
 ```
 
-and then `serve src` to start a local server. 
+and then `serve src` to start a local server.
 
 If not, you can use any static file server to serve the `src` directory. This is just a simple html + javascript project.
+
+## Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
 
 ## License
 
