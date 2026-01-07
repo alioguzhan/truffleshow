@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.0](https://github.com/alioguzhan/truffleshow/compare/0.4.3...0.5.0) (2026-01-07)
+
+
+### Features
+
+* Add CSV export and multiple file support ([d1f5f69](https://github.com/alioguzhan/truffleshow/commit/d1f5f696291a529861eac95628a55a6737092e60))
+* Add CSV export and multiple file support ([ebb9db1](https://github.com/alioguzhan/truffleshow/commit/ebb9db1940d425a0c164647fa5422c536aa7f063))
+
 ## [0.4.3](https://github.com/alioguzhan/truffleshow/compare/0.4.2...0.4.3) (2025-08-04)
 
 
