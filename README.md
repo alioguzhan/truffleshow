@@ -50,6 +50,19 @@ If not, you can use any static file server to serve the `src` directory. This is
 ## Contributors
 
 <!-- readme: contributors -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/alioguzhan">
+                    <img src="https://avatars.githubusercontent.com/u/1928541?v=4" width="100;" alt="alioguzhan"/>
+                    <br />
+                    <sub><b>Ali Oguzhan Yildiz</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
 <!-- readme: contributors -end -->
 
 ## License
