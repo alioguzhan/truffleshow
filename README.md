@@ -35,6 +35,18 @@ I am not sure if I will implement these features but here are some ideas:
 
 This is a very simple tool. I don't plan to add many features but I'm open to suggestions. Feel free to open an issue or send a pull request.
 
+## Development
+
+If you are using `nix flakes`, you can run:
+
+```sh
+nix develop
+```
+
+and then `serve src` to start a local server. 
+
+If not, you can use any static file server to serve the `src` directory. This is just a simple html + javascript project.
+
 ## License
 
 MIT
